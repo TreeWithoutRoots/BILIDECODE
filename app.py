@@ -12,6 +12,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
+# ─── Streamlit Cloud Secrets 兼容 ───
+# 本地用 .env，云端用 st.secrets，这里统一加载到环境变量
+for _key in ("DASHSCOPE_API_KEY", "SUPABASE_URL", "SUPABASE_SECRET_KEY"):
+    if _key not in os.environ:
+        try:
+            os.environ[_key] = st.secrets[_key]
+        except (KeyError, FileNotFoundError):
+            pass
+
 from config import BAILIAN_MODELS, DEFAULT_MODEL, Y2K_COLORS
 from utils.url_parser import parse_url
 from core.bilibili_client import fetch_video_data
